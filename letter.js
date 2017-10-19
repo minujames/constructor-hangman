@@ -10,6 +10,10 @@ function Letter(){
   this.isFilled = function(){
     return this.filled;
   };
+
+  this.toString = function(){
+    return this.name;
+  }
 }
 
 module.exports = Letter;
