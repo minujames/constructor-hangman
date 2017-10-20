@@ -102,7 +102,7 @@ Hangman.prototype.playGame = function(){
     console.log(result.message);
 
     if(result.isGameOver){
-      console.log("Score", "wins:", hangman.wins, "losses:", hangman.losses, "\n"); 
+      console.log(colors.blue("Score", "wins:", hangman.wins, "losses:", hangman.losses, "\n")); 
       hangman.doYouWishToContinue();
     }
     else{
