@@ -10,8 +10,8 @@ This is a command line hangman game. Country names are the words to guess.
 ## Built With
 * [JavaScript](https://www.javascript.com/)
 * [Node](https://nodejs.org/en/)
-** [inquirer](https://www.npmjs.com/package/inquirer)
-** [colors](https://www.npmjs.com/package/colors)
+* [inquirer](https://www.npmjs.com/package/inquirer)
+* [colors](https://www.npmjs.com/package/colors)
 
 ## Author
 [Minu James](https://minujames.github.io/)
