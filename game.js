@@ -1,5 +1,6 @@
 var word = require("./Word.js");
 var inquirer = require("inquirer");
+var colors = require("colors");
 
 function Hangman(){
 
@@ -15,7 +16,6 @@ function Hangman(){
 
   this.initialize = function(){
     var currentWord = this.getNextWord();
-    // console.log("current word: ", currentWord);
     this.currentWordObj = new word(currentWord);
 
     var possibleGuessCount = currentWord.replace(/\s/g, '').length;
@@ -34,33 +34,32 @@ function Hangman(){
     return this.words[random];
   };
 
-
   this.evaluateUserInput = function(guessedLetter){
     var isGameOver = false;
     var message = "";
 
     if(this.alreadyGuessed.includes(guessedLetter)){
-      message = "\n'" + guessedLetter + "' is already guessed!  [" 
-        + this.alreadyGuessed.join(" ") + "]\n";
+      message = "\n'" + guessedLetter + "' is already guessed! [" 
+        + colors.magenta.bold(this.alreadyGuessed.join(" ")) + "]\n";
     }
     else{
       this.alreadyGuessed.push(guessedLetter);
       var isMatchFound = this.currentWordObj.fill(guessedLetter);
       if(isMatchFound){
-        message = "\nCORRECT! \n";
+        message = "\nCORRECT!!\n".green;
         if(this.currentWordObj.isWordComplete()){
-          message = "\nYou got it right! Next word!\n";
+          message = "\nYou got it right!!\n".green;
           isGameOver = true;
         }
       }
       else{
         this.remainingGuesses--;
         if(this.remainingGuesses === 0){
-          message = "\nSORRY! Next word!\n";
+          message = "\nSORRY!! Try Again!!\n".red;
           isGameOver = true;
         }
         else{
-          message = "\nINCORRECT! \n\nRemaining guesses: " + this.remainingGuesses + "\n";
+          message = colors.red("\nINCORRECT!! \n\nRemaining guesses: " + this.remainingGuesses + "\n");
         }
       }
     }
@@ -68,7 +67,8 @@ function Hangman(){
   };
 
   this.startGame = function(){
-    console.log("\n\t HANG MAN COUNTRIES! \n\nFirst word: \n");
+    console.log("\n\t HANG MAN COUNTRIES!".rainbow.bold);
+    console.log("\nFirst word: \n".blue);
     
     this.initialize();
     console.log(this.getDisplayWord(), "\n");
@@ -96,20 +96,38 @@ function Hangman(){
       console.log("\n", hangman.getDisplayWord());
       console.log(result.message);
 
-      if(result.isGameOver){
-        // add prompt wish to continue
+      if(result.isGameOver){  
+        hangman.doYouWishToContinue();
+      }
+      else{
+        hangman.playGame();
+      }
+    });
+  };
 
+  this.doYouWishToContinue = function(){
+    var hangman = this;
+    inquirer.prompt([
+      {
+        type: "confirm",
+        name: "continue",
+        message: "Play again?"
+      }
+    ]).then(function(input){      
+      if(input.continue){
+        console.log("\nNext word! \n".blue);
         hangman.initialize();
         console.log(hangman.getDisplayWord(), "\n");
+        hangman.playGame();
       }
-      hangman.playGame();
+      else{
+        console.log("\nBye!! Bye!!\n".blue);
+      }
     });
   };
 }
 
-
 var hangman = new Hangman();
-// hangman.initialize();
 hangman.startGame();
 
 

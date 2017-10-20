@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/minujames/constructor-hangman#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "inquirer": "^3.3.0"
   }
 }

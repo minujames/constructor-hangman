@@ -27,7 +27,6 @@ function Word(name){
     var latterPattern = new RegExp(guessedLetter, "gi");
 
     while ((match = latterPattern.exec(this.name)) != null) {
-        // console.log("match found at " + match.index);
         var matchedLetterObj = this.letters[match.index];
         matchedLetterObj.fillName(this.name[match.index]);
         isMatchFound = true;
