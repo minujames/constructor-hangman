@@ -1,18 +1,18 @@
 function Letter(){
-  this.name = "_";
-  this.filled = false;
+  var name = "_";
+  var filled = false;
 
-  this.fillName = function(name){
-    this.name = name;
-    this.filled = true;
+  this.fillName = function(text){
+    name = text;
+    filled = true;
   };
 
   this.isFilled = function(){
-    return this.filled;
+    return filled;
   };
 
   this.toString = function(){
-    return this.name;
+    return name;
   }
 }
 
