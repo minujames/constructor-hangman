@@ -4,8 +4,6 @@ function Word(name){
   this.name = name;
   this.letters = [];
 
-
-
   this.createLetters = function(){
     for(var i=0; i<name.length; i++){
       var letterObj = null;
@@ -29,7 +27,7 @@ function Word(name){
     var latterPattern = new RegExp(guessedLetter, "gi");
 
     while ((match = latterPattern.exec(this.name)) != null) {
-        console.log("match found at " + match.index);
+        // console.log("match found at " + match.index);
         var matchedLetterObj = this.letters[match.index];
         matchedLetterObj.fillName(this.name[match.index]);
         isMatchFound = true;
@@ -37,7 +35,7 @@ function Word(name){
     return isMatchFound;
   };
 
-  this.isWordComplete() = function(){
+  this.isWordComplete = function(){
     var isComplete = true;
 
     for(let letter of this.letters){

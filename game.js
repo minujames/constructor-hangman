@@ -9,17 +9,20 @@ function Hangman(){
   "Zimbabwe", "Thailand", "Saudi Arabia", "South Korea", "Singapore"];
   this.wordsGuessed = [];
 
-  this.incorrectGuesses = [];
-
   this.currentWordObj = null;
-
   this.remainingGuesses = 0;
+  this.alreadyGuessed = [];
 
   this.initialize = function(){
     var currentWord = this.getNextWord();
-    console.log("current word: ", currentWord);
+    // console.log("current word: ", currentWord);
     this.currentWordObj = new word(currentWord);
-    this.remainingGuesses = currentWord.length + 2;
+
+    var possibleGuessCount = currentWord.replace(/\s/g, '').length;
+    possibleGuessCount = (possibleGuessCount > 10 ) ? 10 : possibleGuessCount;
+    this.remainingGuesses = possibleGuessCount;
+    
+    this.alreadyGuessed = [];
   };
 
   this.getDisplayWord = function(){
@@ -31,50 +34,50 @@ function Hangman(){
     return this.words[random];
   };
 
+
   this.evaluateUserInput = function(guessedLetter){
-    var isMatchFound = this.currentWordObj.fill(guessedLetter);
-    if(!isMatchFound){
-      this.incorrectGuesses.push(guessedLetter);
-      this.remainingGuesses--;
-    }
-    // return this.currentWordObj.isWordComplete()
-  };
+    var isGameOver = false;
+    var message = "";
 
-  this.getRemainingGuesses = function(){
-    return this.remainingGuesses;
-  };
-
-  this.isGameOver = function(){
-    if(this.remainingGuesses === 0){
-      console.log("GAME OVER! No Guesses remaining");
-    }
-    else if(this.currentWordObj.isWordComplete()){
-      console.log("GAME OVER! You won");
+    if(this.alreadyGuessed.includes(guessedLetter)){
+      message = "\n'" + guessedLetter + "' is already guessed!  [" 
+        + this.alreadyGuessed.join(" ") + "]\n";
     }
     else{
-      console.log("Game continues...");
+      this.alreadyGuessed.push(guessedLetter);
+      var isMatchFound = this.currentWordObj.fill(guessedLetter);
+      if(isMatchFound){
+        message = "\nCORRECT! \n";
+        if(this.currentWordObj.isWordComplete()){
+          message = "\nYou got it right! Next word!\n";
+          isGameOver = true;
+        }
+      }
+      else{
+        this.remainingGuesses--;
+        if(this.remainingGuesses === 0){
+          message = "\nSORRY! Next word!\n";
+          isGameOver = true;
+        }
+        else{
+          message = "\nINCORRECT! \n\nRemaining guesses: " + this.remainingGuesses + "\n";
+        }
+      }
     }
+    return {isGameOver: isGameOver, message: message};
   };
-}
 
+  this.startGame = function(){
+    console.log("\n\t HANG MAN COUNTRIES! \n\nFirst word: \n");
+    
+    this.initialize();
+    console.log(this.getDisplayWord(), "\n");
+    this.playGame();
+  };
 
-var hangman = new Hangman();
-hangman.initialize();
-startGame();
-
-
-
-function startGame(){
-  console.log("\n\t HANG MAN COUNTRIES! \n\n First word: \n");
-  console.log(hangman.getDisplayWord(), "\n");
-
-  playGame();
-}
-
-
-function playGame(){
-  
-  inquirer.prompt([
+  this.playGame = function(){
+    var hangman  = this;
+    inquirer.prompt([
     {
       name: "letter",
       message: "Guess a letter!",
@@ -86,49 +89,27 @@ function playGame(){
         return false;
       }
     }
-  ]).then(function(input){
-    var guessedLetter = input.letter.toLowerCase();
-    var isGameOver = hangman.evaluateUserInput(guessedLetter);
+    ]).then(function(input){
+      var guessedLetter = input.letter.toLowerCase();
+      var result = hangman.evaluateUserInput(guessedLetter);
+      
+      console.log("\n", hangman.getDisplayWord());
+      console.log(result.message);
 
+      if(result.isGameOver){
+        // add prompt wish to continue
 
-
-    if(isGameOver){
-      console.log("You got it right!");
-
-      // add prompt ws=ish to continue
-
-      hangman.initialize();
-      console.log(hangman.getDisplayWord(), "\n");
-      playGame();
-    }
-    else{
-
-      playGame();
-    }
-  });
+        hangman.initialize();
+        console.log(hangman.getDisplayWord(), "\n");
+      }
+      hangman.playGame();
+    });
+  };
 }
 
 
-
-
-
-
-
-
-// Array.prototype.getNextWord = function(wordsGuessed){
-//   if(wordsGuessed.length === this.length){
-//     wordsGuessed = [];
-//   }
-//   var index = Math.floor(Math.random() * this.length);
-//   var randomWord = this[index];
-//   if(wordsGuessed.includes(randomWord)){
-//     this.getNextWord(wordsGuessed);
-//   }
-//   else{
-//     console.log("got a new word ---", randomWord);
-//     wordsGuessed.push(randomWord);
-//     return randomWord;
-//   }
-// };
+var hangman = new Hangman();
+// hangman.initialize();
+hangman.startGame();
 
 
